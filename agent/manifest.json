@@ -1,0 +1,14 @@
+{
+  "name": "CTM-TCY — Agent",
+  "short_name": "CTM-TCY Agent",
+  "description": "Contrôle des billets — CTM-TCY International",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F5F8F3",
+  "theme_color": "#1F6B3B",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
