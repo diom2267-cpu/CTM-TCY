@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CTM-TCY International</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#B5541E">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Work+Sans:wght@400;500;600;700&display=swap');
+
+:root{
+  --orange: #C2571E;
+  --orange-deep: #8F3E13;
+  --green: #1F6B3B;
+  --cream: #FBF6EE;
+  --ink: #241C14;
+  --ink-soft: #7A6A57;
+  --line: #E9DDC9;
+  --gold: #C9A24A;
+  --red: #B23A2E;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--cream); color:var(--ink);
+  font-family:'Work Sans',sans-serif;
+  min-height:100vh; overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+.serif{ font-family:'Fraunces',serif; }
+
+/* ---------------- SPLASH : photo réelle du bus + Bienvenue ---------------- */
+#splash{
+  position:fixed; inset:0; background:#0d0a07; z-index:100; overflow:hidden;
+}
+#splash .busPhoto{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  transform: translateX(-30%) scale(1.15);
+  animation: driveIn 2.8s cubic-bezier(.2,.7,.2,1) forwards;
+  filter: brightness(0.75);
+}
+@keyframes driveIn{
+  0%{ transform: translateX(-55%) scale(1.2); }
+  100%{ transform: translateX(0%) scale(1.05); }
+}
+#splash .veil{
+  position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(15,10,6,0.15) 0%, rgba(15,10,6,0.75) 100%);
+}
+#splash .welcome{
+  position:absolute; left:0; right:0; bottom:14%; text-align:center;
+  opacity:0; animation: riseIn 1.1s ease forwards 1.9s;
+}
+#splash .welcome h2{
+  font-size:38px; margin:0; color:#fff; letter-spacing:1px; font-weight:900;
+  text-shadow: 0 4px 18px rgba(0,0,0,0.45);
+}
+#splash .welcome p{ font-size:12px; color:var(--gold); letter-spacing:4px; margin:6px 0 0; }
+@keyframes riseIn{ from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);} }
+#splash.fadeOut{ animation: fadeOutAll 0.6s ease forwards; }
+@keyframes fadeOutAll{ to{ opacity:0; } }
+
+/* ---------------- App shell ---------------- */
+#app{ display:none; padding-bottom:20px; }
+
+.hero{
+  position:relative; height:190px; overflow:hidden;
+  border-radius:0 0 24px 24px;
+}
+.hero img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  transform:scale(1.08);
+}
+.hero .overlay{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(143,62,19,0.55) 0%, rgba(90,38,10,0.88) 100%);
+}
+.hero .text{ position:absolute; left:20px; right:20px; bottom:16px; color:#fff; }
+.hero .intl{ font-size:11px; letter-spacing:3px; opacity:0.9; margin-bottom:2px; }
+.hero h1{ font-family:'Fraunces',serif; font-size:27px; margin:0; font-weight:900; text-shadow:0 3px 12px rgba(0,0,0,0.4); }
+.hero .sub{ font-size:12px; opacity:0.92; margin-top:4px; }
+
+.content{ max-width:520px; margin:0 auto; padding:18px; }
+
+.tabs{ display:flex; gap:8px; margin:16px 18px 14px; max-width:520px; margin-left:auto; margin-right:auto; }
+.tab{
+  flex:1; text-align:center; padding:10px; border-radius:10px; font-size:13.5px;
+  background:#fff; border:1px solid var(--line); color:var(--ink-soft); cursor:pointer;
+}
+.tab.active{ background:var(--orange); color:#fff; border-color:var(--orange); font-weight:600; }
+
+.card{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:14px; }
+.card h3{ font-family:'Fraunces',serif; font-size:16px; margin:0 0 12px; color:var(--orange-deep); }
+
+.field{ margin-bottom:12px; }
+.field label{ display:block; font-size:12px; color:var(--ink-soft); margin-bottom:5px; }
+.field input, .field select{
+  width:100%; padding:11px; border-radius:10px; border:1px solid var(--line);
+  font-family:'Work Sans',sans-serif; font-size:14.5px; background:#fdfaf4; color:var(--ink);
+}
+.field input.ok, .field select.ok{ border-color:#2E8B4F; background:#F2FBF5; }
+.field input.err{ border-color:var(--red); background:#FDF2F0; }
+.row2{ display:flex; gap:10px; }
+.row2 .field{ flex:1; }
+
+.segmented{ display:flex; gap:8px; margin-bottom:14px; }
+.segmented button{
+  flex:1; padding:11px; border-radius:10px; border:1.5px solid var(--line);
+  background:#fff; color:var(--ink-soft); font-weight:600; font-size:13.5px; cursor:pointer;
+}
+.segmented button.sel{ background:var(--orange); border-color:var(--orange); color:#fff; }
+
+.price-box{
+  background:#FFF6E9; border:1px solid var(--gold); border-radius:10px; padding:12px 14px; margin-bottom:14px;
+}
+.price-box .row{ display:flex; justify-content:space-between; font-size:13px; margin-bottom:3px; color:var(--ink-soft); }
+.price-box .row.total{ font-weight:700; color:var(--ink); font-size:15px; margin-top:6px; border-top:1px dashed var(--gold); padding-top:6px; }
+
+.seat-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:6px; }
+.seat{
+  aspect-ratio:1; border-radius:8px; border:1.5px solid var(--line); background:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:600;
+  color:var(--ink-soft); cursor:pointer;
+}
+.seat.taken{ background:#F3EFEA; color:#B9AFA2; border-color:#E3DACB; cursor:not-allowed; text-decoration:line-through; }
+.seat.selected{ background:#2E8B4F; color:#fff; border-color:#2E8B4F; }
+.seat-legend{ display:flex; gap:14px; font-size:11.5px; color:var(--ink-soft); margin-bottom:14px; }
+.seat-legend span{ display:inline-flex; align-items:center; gap:5px; }
+.dot{ width:10px; height:10px; border-radius:3px; display:inline-block; }
+
+.btn{ width:100%; padding:14px; border:none; border-radius:12px; background:var(--orange); color:#fff; font-weight:700; font-size:15px; cursor:pointer; }
+.btn:disabled{ opacity:0.5; }
+
+.ticket{
+  background:linear-gradient(135deg, var(--orange), var(--orange-deep));
+  color:#fff; border-radius:16px; padding:20px; margin-bottom:14px; position:relative; overflow:hidden;
+}
+.ticket .intl-tag{ font-size:10px; letter-spacing:2px; opacity:0.85; }
+.ticket h4{ font-family:'Fraunces',serif; font-size:19px; margin:4px 0 10px; }
+.ticket .route{ font-size:14px; font-weight:600; margin-bottom:2px; }
+.ticket .meta{ font-size:12px; opacity:0.9; margin-bottom:6px; }
+.ticket .status-badge{ display:inline-block; font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; margin-bottom:10px; }
+.status-badge.valide{ background:rgba(255,255,255,0.22); }
+.status-badge.utilise{ background:#2E8B4F; }
+.status-badge.refuse{ background:var(--red); }
+.ticket .motif{ background:rgba(0,0,0,0.2); border-radius:8px; padding:8px 10px; font-size:12px; margin-bottom:10px; }
+.ticket .code-box{
+  background:rgba(255,255,255,0.15); border:1.5px dashed rgba(255,255,255,0.5);
+  border-radius:10px; padding:12px; text-align:center;
+}
+.ticket .code-box .code{ font-family:'Fraunces',serif; font-size:26px; letter-spacing:5px; font-weight:700; }
+.ticket .code-box .hint{ font-size:10px; opacity:0.85; margin-top:4px; }
+.ticket .seat-tag{ display:inline-block; background:rgba(255,255,255,0.2); padding:3px 10px; border-radius:999px; font-size:12px; margin-top:8px; }
+
+.empty{ text-align:center; padding:40px 20px; color:var(--ink-soft); }
+.empty .serif{ font-size:17px; color:var(--ink); display:block; margin-bottom:6px; }
+
+/* ---------------- Overlays ---------------- */
+.overlay{ position:fixed; inset:0; background:rgba(20,14,8,0.55); display:none; align-items:center; justify-content:center; z-index:40; padding:20px; }
+.overlay.show{ display:flex; }
+.confirm-box{ background:#fff; border-radius:18px; padding:24px 22px; max-width:340px; width:100%; text-align:center; }
+.confirm-box h3{ font-family:'Fraunces',serif; font-size:19px; margin:0 0 8px; color:var(--orange-deep); }
+.confirm-box p{ font-size:13.5px; color:var(--ink-soft); margin:0 0 18px; }
+.confirm-actions{ display:flex; flex-direction:column; gap:10px; }
+.confirm-actions .yes{ background:var(--orange); color:#fff; border:none; padding:13px; border-radius:10px; font-weight:700; font-size:14.5px; }
+.confirm-actions .no{ background:#fff; color:var(--ink-soft); border:1.5px solid var(--line); padding:13px; border-radius:10px; font-weight:600; font-size:14.5px; }
+
+.success-overlay{ position:fixed; inset:0; background:var(--orange-deep); z-index:50; display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px; color:#fff; }
+.success-overlay.show{ display:flex; }
+.success-overlay .check{ font-size:52px; margin-bottom:18px; opacity:0; animation: popIn .6s ease forwards; }
+.success-overlay h2{ font-family:'Fraunces',serif; font-size:24px; margin:0 0 10px; opacity:0; animation: riseIn2 .8s ease forwards 0.3s; line-height:1.3; }
+.success-overlay p{ font-size:13px; opacity:0; color:var(--gold); letter-spacing:1px; animation: riseIn2 .8s ease forwards 0.7s; }
+.success-overlay button{ margin-top:26px; background:#fff; color:var(--orange-deep); border:none; padding:13px 28px; border-radius:10px; font-weight:700; opacity:0; animation: riseIn2 .8s ease forwards 1.1s; }
+@keyframes popIn{ from{opacity:0; transform:scale(0.5);} to{opacity:1; transform:scale(1);} }
+@keyframes riseIn2{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+
+.sheet-handle{ width:38px;height:4px;background:var(--line);border-radius:99px;margin:10px auto 14px; }
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <img class="busPhoto" src="bus-source.jpg" alt="">
+  <div class="veil"></div>
+  <div class="welcome">
+    <h2 class="serif">Bienvenue</h2>
+    <p>CTM-TCY INTERNATIONAL</p>
+  </div>
+</div>
+
+<div id="app">
+  <div class="hero">
+    <img src="bus-source.jpg" alt="">
+    <div class="overlay"></div>
+    <div class="text">
+      <div class="intl">CTM-TCY · INTERNATIONAL</div>
+      <h1>Réserver un trajet</h1>
+      <div class="sub">Abidjan · Facobly · Man · Duékoué · Bangolo · Ouaninou</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" id="tabReserver">Réserver</div>
+    <div class="tab" id="tabBillets">Historique</div>
+  </div>
+
+  <div class="content">
+
+    <div id="viewReserver">
+      <div class="card">
+        <h3>Type de voyage</h3>
+        <div class="segmented">
+          <button class="sel" id="btnAller">Aller simple</button>
+          <button id="btnAllerRetour">Aller-retour</button>
+        </div>
+
+        <h3>Trajet</h3>
+        <div class="field">
+          <label>Départ</label>
+          <select id="fDepart">
+            <option>Abidjan</option>
+            <option>Man</option>
+            <option>Duékoué</option>
+            <option>Facobly</option>
+            <option>Bangolo</option>
+            <option>Ouaninou</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Destination</label>
+          <select id="fDestination">
+            <option>Man</option>
+            <option>Abidjan</option>
+            <option>Duékoué</option>
+            <option>Facobly</option>
+            <option>Bangolo</option>
+            <option>Ouaninou</option>
+          </select>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label id="labelDateAller">Date de départ</label>
+            <input type="date" id="fDateAller">
+          </div>
+          <div class="field">
+            <label>Heure de départ</label>
+            <select id="fHeure">
+              <option value="06:00">06:00</option>
+              <option value="09:00">09:00</option>
+              <option value="13:00">13:00</option>
+              <option value="16:00">16:00</option>
+            </select>
+          </div>
+        </div>
+        <div class="row2" id="rowRetour" style="display:none;">
+          <div class="field">
+            <label>Date de retour</label>
+            <input type="date" id="fDateRetour">
+          </div>
+          <div class="field">
+            <label>Heure de retour</label>
+            <select id="fHeureRetour">
+              <option value="06:00">06:00</option>
+              <option value="09:00">09:00</option>
+              <option value="13:00">13:00</option>
+              <option value="16:00">16:00</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="price-box" id="priceBox">
+          <div class="row"><span>Trajet</span><span id="pRoute">—</span></div>
+          <div class="row"><span>Timbre</span><span>100 FCFA</span></div>
+          <div class="row total"><span>Total</span><span id="pTotal">—</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Passager</h3>
+        <div class="row2">
+          <div class="field"><label>Nom</label><input type="text" id="fNom" placeholder="Kouassi"></div>
+          <div class="field"><label>Prénom</label><input type="text" id="fPrenom" placeholder="Jean"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Profession</label><input type="text" id="fProfession" placeholder="Commerçant"></div>
+          <div class="field"><label>Âge</label><input type="number" id="fAge" placeholder="34"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Choisir votre siège</h3>
+        <div class="seat-legend">
+          <span><span class="dot" style="background:#fff;border:1px solid #ccc;"></span>Libre</span>
+          <span><span class="dot" style="background:#2E8B4F;"></span>Sélectionné</span>
+          <span><span class="dot" style="background:#F3EFEA;"></span>Occupé</span>
+        </div>
+        <div class="seat-grid" id="seatGrid"></div>
+      </div>
+
+      <button class="btn" id="btnReserver">Confirmer la réservation</button>
+    </div>
+
+    <div id="viewBillets" style="display:none;">
+      <div id="billetsList"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="overlay" id="overlayConfirm">
+  <div class="confirm-box">
+    <h3 class="serif">Confirmer la réservation ?</h3>
+    <p>Souhaitez-vous vraiment confirmer cette réservation avec les informations saisies ?</p>
+    <div class="confirm-actions">
+      <button class="yes" id="btnOui">OUI, réserver</button>
+      <button class="no" id="btnNon">NON, annuler la réservation</button>
+    </div>
+  </div>
+</div>
+
+<div class="success-overlay" id="successOverlay">
+  <div class="check">✓</div>
+  <h2 class="serif">Félicitations pour votre réservation<br>CTM-TCY International vous remercie<br>pour votre confiance</h2>
+  <p>BON VOYAGE</p>
+  <button id="btnVoirBillet">Voir mon billet</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {
+  getFirestore, collection, doc, setDoc, getDoc, query, where, getDocs
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA-R0xvWR0zoNv9-nzbPHaz_sPziX8vgGA",
+  authDomain: "ctmtcy-test.firebaseapp.com",
+  projectId: "ctmtcy-test",
+  storageBucket: "ctmtcy-test.firebasestorage.app",
+  messagingSenderId: "566569781223",
+  appId: "1:566569781223:web:53192afd62f3517e341f42"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+
+const STORAGE_KEY = 'ctmtcy_bookings_v2';
+const SEAT_COUNT = 40;
+
+// Prix par défaut (utilisés si le document "tarifs" n'existe pas encore dans Firestore)
+const DEFAULT_TARIFS = { Man:7500, "Duékoué":9000, Facobly:9000, Bangolo:8500, Ouaninou:11100 };
+let TARIFS = {...DEFAULT_TARIFS};
+
+function loadBookings(){ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+function saveBookings(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+
+function genCode(){
+  const chars = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
+  let code = '';
+  for(let i=0;i<6;i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+async function uniqueCode(){
+  let c, exists = true;
+  while(exists){
+    c = genCode();
+    const snap = await getDoc(doc(db, 'reservations', c));
+    exists = snap.exists();
+  }
+  return c;
+}
+
+// ---------------- Charger les tarifs depuis Firestore ----------------
+async function loadTarifs(){
+  try{
+    const snap = await getDoc(doc(db, 'tarifs', 'villes'));
+    if(snap.exists()){ TARIFS = {...DEFAULT_TARIFS, ...snap.data()}; }
+  }catch(e){ /* on garde les tarifs par défaut si hors-ligne */ }
+  updatePrice();
+}
+
+// ---------------- Splash ----------------
+window.addEventListener('load', ()=>{
+  loadTarifs();
+  setTimeout(()=>{
+    const s = document.getElementById('splash');
+    s.classList.add('fadeOut');
+    setTimeout(()=>{ s.style.display='none'; document.getElementById('app').style.display='block'; renderSeats(); }, 600);
+  }, 3300);
+});
+
+// ---------------- Tabs ----------------
+document.getElementById('tabReserver').onclick = ()=>{
+  document.getElementById('tabReserver').classList.add('active');
+  document.getElementById('tabBillets').classList.remove('active');
+  document.getElementById('viewReserver').style.display = 'block';
+  document.getElementById('viewBillets').style.display = 'none';
+};
+document.getElementById('tabBillets').onclick = ()=>{
+  document.getElementById('tabBillets').classList.add('active');
+  document.getElementById('tabReserver').classList.remove('active');
+  document.getElementById('viewReserver').style.display = 'none';
+  document.getElementById('viewBillets').style.display = 'block';
+  renderBillets();
+};
+
+// ---------------- Type de voyage ----------------
+let typeVoyage = 'aller';
+document.getElementById('btnAller').onclick = ()=>{
+  typeVoyage = 'aller';
+  document.getElementById('btnAller').classList.add('sel');
+  document.getElementById('btnAllerRetour').classList.remove('sel');
+  document.getElementById('rowRetour').style.display = 'none';
+  document.getElementById('labelDateAller').textContent = 'Date de départ';
+  updatePrice();
+};
+document.getElementById('btnAllerRetour').onclick = ()=>{
+  typeVoyage = 'aller-retour';
+  document.getElementById('btnAllerRetour').classList.add('sel');
+  document.getElementById('btnAller').classList.remove('sel');
+  document.getElementById('rowRetour').style.display = 'flex';
+  document.getElementById('labelDateAller').textContent = "Date d'aller";
+  updatePrice();
+};
+
+document.getElementById('fDateAller').valueAsDate = new Date();
+document.getElementById('fDateRetour').valueAsDate = new Date();
+
+function routeCityKey(){
+  const d = document.getElementById('fDepart').value;
+  const a = document.getElementById('fDestination').value;
+  return d === 'Abidjan' ? a : d; // la ville "hors Abidjan" détermine le tarif
+}
+
+function updatePrice(){
+  const ville = routeCityKey();
+  const prixUnitaire = TARIFS[ville] || 0;
+  const nb = typeVoyage === 'aller-retour' ? 2 : 1;
+  const total = prixUnitaire * nb + 100;
+  document.getElementById('pRoute').textContent = `${document.getElementById('fDepart').value} → ${document.getElementById('fDestination').value} (${prixUnitaire.toLocaleString('fr-FR')} FCFA${nb===2?' x2':''})`;
+  document.getElementById('pTotal').textContent = total.toLocaleString('fr-FR') + ' FCFA';
+  renderSeats();
+}
+document.getElementById('fDepart').onchange = updatePrice;
+document.getElementById('fDestination').onchange = updatePrice;
+document.getElementById('fHeure').onchange = renderSeats;
+document.getElementById('fDateAller').onchange = renderSeats;
+
+// ---------------- Sélection de siège ----------------
+let selectedSeat = null;
+
+function currentRouteKey(){
+  return [
+    document.getElementById('fDepart').value,
+    document.getElementById('fDestination').value,
+    document.getElementById('fDateAller').value,
+    document.getElementById('fHeure').value
+  ].join('_');
+}
+
+async function renderSeats(){
+  const grid = document.getElementById('seatGrid');
+  grid.innerHTML = '';
+  selectedSeat = null;
+  let takenSeats = [];
+  try{
+    const q = query(collection(db, 'reservations'), where('routeKey', '==', currentRouteKey()));
+    const snap = await getDocs(q);
+    snap.forEach(d=>{
+      const data = d.data();
+      if(data.statut !== 'refuse'){ takenSeats.push(data.siege); }
+    });
+  }catch(e){ /* hors-ligne : on affiche tout comme libre par prudence visuelle uniquement */ }
+
+  for(let i=1;i<=SEAT_COUNT;i++){
+    const el = document.createElement('div');
+    el.className = 'seat' + (takenSeats.includes(i) ? ' taken' : '');
+    el.textContent = i;
+    if(!takenSeats.includes(i)){
+      el.onclick = ()=>{
+        document.querySelectorAll('.seat.selected').forEach(s=>s.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedSeat = i;
+      };
+    }
+    grid.appendChild(el);
+  }
+}
+
+// ---------------- Validation visuelle des champs ----------------
+function markField(el, ok){
+  el.classList.remove('ok','err');
+  el.classList.add(ok ? 'ok' : 'err');
+}
+
+function validateForm(){
+  let valid = true;
+  const nom = document.getElementById('fNom');
+  const prenom = document.getElementById('fPrenom');
+  const profession = document.getElementById('fProfession');
+  const age = document.getElementById('fAge');
+
+  [ [nom, nom.value.trim().length>0], [prenom, prenom.value.trim().length>0],
+    [profession, profession.value.trim().length>0], [age, age.value && age.value>0]
+  ].forEach(([el,ok])=>{ markField(el, ok); if(!ok) valid = false; });
+
+  if(!selectedSeat){ valid = false; alert('Merci de choisir un siège.'); }
+  return valid;
+}
+
+// ---------------- Réservation ----------------
+document.getElementById('btnReserver').onclick = ()=>{
+  if(!validateForm()) return;
+  document.getElementById('overlayConfirm').classList.add('show');
+};
+document.getElementById('btnNon').onclick = ()=>{
+  document.getElementById('overlayConfirm').classList.remove('show');
+};
+
+document.getElementById('btnOui').onclick = async ()=>{
+  document.getElementById('overlayConfirm').classList.remove('show');
+  const btn = document.getElementById('btnReserver');
+  btn.disabled = true; btn.textContent = 'Envoi en cours...';
+
+  try{
+    const code = await uniqueCode();
+    const ville = routeCityKey();
+    const prixUnitaire = TARIFS[ville] || 0;
+    const nb = typeVoyage === 'aller-retour' ? 2 : 1;
+    const prixTotal = prixUnitaire * nb + 100;
+
+    const booking = {
+      code, typeVoyage,
+      depart: document.getElementById('fDepart').value,
+      destination: document.getElementById('fDestination').value,
+      dateAller: document.getElementById('fDateAller').value,
+      heure: document.getElementById('fHeure').value,
+      dateRetour: typeVoyage==='aller-retour' ? document.getElementById('fDateRetour').value : null,
+      heureRetour: typeVoyage==='aller-retour' ? document.getElementById('fHeureRetour').value : null,
+      nom: document.getElementById('fNom').value.trim(),
+      prenom: document.getElementById('fPrenom').value.trim(),
+      profession: document.getElementById('fProfession').value.trim(),
+      age: document.getElementById('fAge').value,
+      siege: selectedSeat,
+      prixTotal, timbre: 100,
+      routeKey: currentRouteKey(),
+      statut: 'valide',
+      motifRefus: null,
+      creeLe: new Date().toISOString()
+    };
+
+    await setDoc(doc(db, 'reservations', code), booking);
+
+    const list = loadBookings();
+    list.push(booking);
+    saveBookings(list);
+
+    scheduleReminder(booking);
+    window._lastBooking = booking;
+    document.getElementById('successOverlay').classList.add('show');
+  }catch(err){
+    alert("Erreur de connexion — vérifiez votre internet et réessayez. (" + err.message + ")");
+  }finally{
+    btn.disabled = false; btn.textContent = 'Confirmer la réservation';
+  }
+};
+
+document.getElementById('btnVoirBillet').onclick = ()=>{
+  document.getElementById('successOverlay').classList.remove('show');
+  document.getElementById('tabBillets').click();
+};
+
+// ---------------- Affichage billets / historique ----------------
+function statusLabel(b){
+  if(b.statut === 'utilise') return { txt:'✔ VALIDÉ À LA GARE', cls:'utilise' };
+  if(b.statut === 'refuse') return { txt:'✕ REFUSÉ', cls:'refuse' };
+  return { txt:'BILLET EN RÈGLE', cls:'valide' };
+}
+
+function ticketHTML(b){
+  const d = new Date(b.dateAller);
+  const dateStr = d.toLocaleDateString('fr-FR', {day:'2-digit', month:'short', year:'numeric'});
+  const st = statusLabel(b);
+  return `
+    <div class="ticket">
+      <div class="intl-tag">CTM-TCY INTERNATIONAL</div>
+      <h4>${b.typeVoyage === 'aller-retour' ? 'Billet aller-retour' : 'Billet aller simple'}</h4>
+      <span class="status-badge ${st.cls}">${st.txt}</span>
+      <div class="route">${b.depart} → ${b.destination}</div>
+      <div class="meta">${dateStr} · Départ ${b.heure} · ${b.nom} ${b.prenom}</div>
+      <div class="meta">Total payé : ${Number(b.prixTotal).toLocaleString('fr-FR')} FCFA</div>
+      ${b.statut === 'refuse' && b.motifRefus ? `<div class="motif">Motif : ${b.motifRefus}</div>` : ''}
+      <div class="code-box">
+        <div class="code">${b.code}</div>
+        <div class="hint">à présenter à l'agent</div>
+      </div>
+      <div class="seat-tag">Siège n° ${b.siege}</div>
+    </div>
+  `;
+}
+
+async function renderBillets(){
+  const list = loadBookings().sort((a,b)=> new Date(b.creeLe) - new Date(a.creeLe));
+  const wrap = document.getElementById('billetsList');
+  if(list.length===0){
+    wrap.innerHTML = '<div class="empty"><span class="serif">Aucun billet</span>Réservez votre premier trajet</div>';
+    return;
+  }
+  wrap.innerHTML = list.map(ticketHTML).join('');
+
+  // Rafraîchir les statuts (validé / refusé) depuis Firestore
+  for(const b of list){
+    try{
+      const snap = await getDoc(doc(db, 'reservations', b.code));
+      if(snap.exists()){
+        const fresh = snap.data();
+        if(fresh.statut !== b.statut || fresh.motifRefus !== b.motifRefus){
+          Object.assign(b, { statut: fresh.statut, motifRefus: fresh.motifRefus });
+        }
+      }
+    }catch(e){}
+  }
+  saveBookings(list);
+  wrap.innerHTML = list.map(ticketHTML).join('');
+}
+
+// ---------------- Rappel local ----------------
+function scheduleReminder(b){
+  if(!('Notification' in window)) return;
+  if(Notification.permission === 'default'){ Notification.requestPermission(); }
+  const depTime = new Date(b.dateAller + 'T' + b.heure + ':00');
+  const reminderTime = new Date(depTime.getTime() - 30*60000);
+  const msUntil = reminderTime.getTime() - Date.now();
+  if(msUntil > 0 && msUntil < 24*3600000){
+    setTimeout(()=>{
+      if(Notification.permission === 'granted'){
+        new Notification('CTM-TCY International', {
+          body: `Départ ${b.depart} → ${b.destination} à ${b.heure}. Votre code : ${b.code}`,
+        });
+      }
+    }, msUntil);
+  }
+}
+
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+</script>
+</body>
+</html>
