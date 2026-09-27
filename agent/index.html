@@ -7,127 +7,126 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1F6B3B">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Work+Sans:wght@400;500;600;700&display=swap');
 
 :root{
-  --green: #1F6B3B;
-  --green-deep: #143F23;
-  --orange: #C2571E;
-  --cream: #F5F8F3;
-  --ink: #1D2A21;
-  --ink-soft: #6E7C71;
-  --line: #DCE6DE;
-  --gold: #C9A24A;
-  --red: #B23A2E;
+  --green: #1F6B3B; --green-deep: #143F23; --orange: #C2571E;
+  --cream: #F5F8F3; --ink: #1D2A21; --ink-soft: #6E7C71;
+  --line: #DCE6DE; --gold: #C9A24A; --red: #B23A2E;
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
-body{
-  background:var(--cream); color:var(--ink);
-  font-family:'Work Sans',sans-serif; min-height:100vh; overflow-x:hidden;
-  -webkit-tap-highlight-color:transparent;
-}
+body{ background:var(--cream); color:var(--ink); font-family:'Work Sans',sans-serif; min-height:100vh; overflow-x:hidden; -webkit-tap-highlight-color:transparent; }
 .serif{ font-family:'Fraunces',serif; }
 
-/* ---------------- Splash : logo animé ---------------- */
-#splash{
-  position:fixed; inset:0; background:var(--green);
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  z-index:100; color:#fff;
+/* ---------------- Splash : photo réelle + texte animé en boucle ---------------- */
+#splash{ position:fixed; inset:0; background:#0d0a07; z-index:100; overflow:hidden; }
+#splash .busPhoto{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  filter: brightness(0.55) saturate(1.05);
+  transform: scale(1.12);
+  animation: slowPan 8s ease-in-out infinite alternate;
 }
-#splash .mark{
-  width:78px;height:78px;border-radius:50%;
-  border:2px solid rgba(255,255,255,0.5);
-  display:flex;align-items:center;justify-content:center;
-  margin-bottom:16px; font-family:'Fraunces',serif; font-weight:700; font-size:24px;
-  animation: pulse 1.3s ease-in-out infinite;
+@keyframes slowPan{ from{ transform: scale(1.12) translateX(-2%);} to{ transform: scale(1.18) translateX(2%);} }
+#splash .veil{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(20,63,35,0.35) 0%, rgba(13,10,7,0.75) 100%); }
+#splash .brandText{
+  position:absolute; left:0; right:0; top:38%; text-align:center; padding:0 20px;
 }
-@keyframes pulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.08); } }
-#splash h1{ font-size:19px; margin:0; letter-spacing:0.5px; }
-#splash span{ font-size:11px; letter-spacing:3px; opacity:0.85; margin-top:4px; }
-#splash .tag{ font-size:11px; opacity:0.75; margin-top:18px; letter-spacing:1px; }
+#splash .brandText h1{
+  font-family:'Fraunces',serif; font-weight:900; color:#fff; margin:0;
+  font-size:15vw; letter-spacing:1px; text-shadow:0 6px 24px rgba(0,0,0,0.5);
+  opacity:0; animation: writeLoop 4s ease-in-out infinite;
+}
+@keyframes writeLoop{
+  0%{ opacity:0; transform:translateY(10px) scale(0.96); letter-spacing:6px; }
+  15%{ opacity:1; transform:translateY(0) scale(1); letter-spacing:1px; }
+  70%{ opacity:1; transform:translateY(0) scale(1); }
+  90%{ opacity:0; transform:translateY(-6px) scale(1.02); }
+  100%{ opacity:0; }
+}
+#splash .tag{
+  position:absolute; left:0; right:0; top:56%; text-align:center;
+  font-size:11px; color:var(--gold); letter-spacing:4px; opacity:0.9;
+}
+#splash .agentTag{
+  position:absolute; left:0; right:0; bottom:9%; text-align:center;
+  font-size:11px; color:rgba(255,255,255,0.75); letter-spacing:3px;
+}
 
-/* ---------------- Login (Identifiant) ---------------- */
-#login{
-  display:none; min-height:100vh; align-items:center; justify-content:center; padding:24px;
-}
-#login .box{
-  background:#fff; border:1px solid var(--line); border-radius:16px; padding:28px 24px;
-  max-width:360px; width:100%; text-align:center;
-}
-#login .mark2{
-  width:56px;height:56px;border-radius:50%; background:var(--green); color:#fff;
-  display:flex; align-items:center; justify-content:center; margin:0 auto 14px;
-  font-family:'Fraunces',serif; font-weight:700; font-size:18px;
-}
+/* ---------------- Login ---------------- */
+#login{ display:none; min-height:100vh; align-items:center; justify-content:center; padding:24px; }
+#login .box{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:28px 24px; max-width:360px; width:100%; text-align:center; }
+#login .mark2{ width:56px;height:56px;border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-family:'Fraunces',serif; font-weight:700; font-size:15px; }
 #login h2{ font-family:'Fraunces',serif; font-size:19px; margin:0 0 4px; color:var(--green-deep); }
 #login .sub{ font-size:12px; color:var(--ink-soft); margin-bottom:18px; letter-spacing:1px; }
-#login input{
-  width:100%; padding:13px; border-radius:10px; border:1.5px solid var(--line);
-  font-size:15px; text-align:center; letter-spacing:1px; margin-bottom:10px;
-}
+#login input{ width:100%; padding:13px; border-radius:10px; border:1.5px solid var(--line); font-size:15px; text-align:center; letter-spacing:1px; margin-bottom:10px; }
 #login .err{ color:var(--red); font-size:12.5px; margin-bottom:10px; display:none; }
-#login .btn{
-  width:100%; padding:13px; border:none; border-radius:10px;
-  background:var(--green); color:#fff; font-weight:700; font-size:15px; cursor:pointer;
-}
+#login .btn{ width:100%; padding:13px; border:none; border-radius:10px; background:var(--green); color:#fff; font-weight:700; font-size:15px; cursor:pointer; }
 #login .hint{ font-size:11px; color:var(--ink-soft); margin-top:14px; }
 
 /* ---------------- App shell ---------------- */
 #app{ display:none; }
-.topbar{
-  background:var(--green); color:#fff; padding:20px 20px 22px; border-radius:0 0 20px 20px;
-  display:flex; justify-content:space-between; align-items:flex-start;
-}
-.topbar .intl{ font-size:11px; letter-spacing:3px; opacity:0.85; margin-bottom:2px; }
-.topbar h1{ font-family:'Fraunces',serif; font-size:22px; margin:0; font-weight:700; }
-.topbar .agentTag{ font-size:11px; opacity:0.85; margin-top:4px; }
-.logout{ background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.4); color:#fff;
-  padding:6px 12px; border-radius:999px; font-size:11.5px; cursor:pointer; }
+.hero{ position:relative; height:150px; overflow:hidden; border-radius:0 0 20px 20px; }
+.hero img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.hero .overlay{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(20,63,35,0.55) 0%, rgba(13,40,24,0.9) 100%); }
+.hero .row{ position:relative; height:100%; display:flex; justify-content:space-between; align-items:flex-start; padding:18px 18px; }
+.hero .intl{ font-size:11px; letter-spacing:3px; opacity:0.9; margin-bottom:2px; color:#fff; }
+.hero h1{ font-family:'Fraunces',serif; font-size:21px; margin:0; font-weight:900; color:#fff; }
+.hero .agentTag2{ font-size:11px; opacity:0.85; margin-top:4px; color:#fff; }
+.logout{ background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.4); color:#fff; padding:6px 12px; border-radius:999px; font-size:11.5px; cursor:pointer; }
 
 .content{ max-width:520px; margin:0 auto; padding:18px; }
 
+.tabs{ display:flex; gap:8px; margin-bottom:16px; }
+.tab{ flex:1; text-align:center; padding:10px; border-radius:10px; font-size:13px; background:#fff; border:1px solid var(--line); color:var(--ink-soft); cursor:pointer; }
+.tab.active{ background:var(--green); color:#fff; border-color:var(--green); font-weight:600; }
+
 .search-card{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:16px; }
 .search-card label{ display:block; font-size:12px; color:var(--ink-soft); margin-bottom:6px; }
-.code-input{
-  width:100%; padding:14px; border-radius:10px; border:1.5px solid var(--line);
-  font-family:'Fraunces',serif; font-size:22px; letter-spacing:6px; text-align:center;
-  text-transform:uppercase; margin-bottom:10px;
-}
+.code-input{ width:100%; padding:14px; border-radius:10px; border:1.5px solid var(--line); font-family:'Fraunces',serif; font-size:22px; letter-spacing:6px; text-align:center; text-transform:uppercase; margin-bottom:10px; }
 .btn{ width:100%; padding:13px; border:none; border-radius:10px; background:var(--green); color:#fff; font-weight:700; font-size:14.5px; cursor:pointer; }
 
 .result{ display:none; }
-.result-card{
-  border-radius:16px; padding:20px; margin-bottom:14px; color:#fff;
-}
+.result-card{ border-radius:16px; padding:20px; margin-bottom:14px; color:#fff; }
 .result-card.ok{ background:linear-gradient(135deg, var(--green), var(--green-deep)); }
-.result-card.used{ background:linear-gradient(135deg, #8A6D1F, #5C4712); }
+.result-card.used{ background:linear-gradient(135deg, #2E8B4F, #1F6B3B); }
+.result-card.refused{ background:linear-gradient(135deg, #8A6D1F, #5C4712); }
 .result-card.none{ background:linear-gradient(135deg, var(--red), #7A231A); }
 .result-card .status-tag{ font-size:11px; letter-spacing:2px; opacity:0.9; margin-bottom:6px; }
 .result-card h3{ font-family:'Fraunces',serif; font-size:20px; margin:0 0 12px; }
-.result-card .line{ font-size:14px; margin-bottom:4px; }
+.result-card .line{ font-size:13.5px; margin-bottom:4px; }
 .result-card .line b{ font-weight:700; }
 .result-card .route{ font-size:16px; font-weight:700; margin:10px 0 2px; }
 
 .actions{ display:flex; gap:10px; margin-top:14px; }
-.actions .btn.secondary{ background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.4); }
 .actions .btn.confirm{ background:#fff; color:var(--green-deep); }
+.actions .btn.deny{ background:rgba(178,58,46,0.85); color:#fff; }
 
-.reset-link{ display:block; text-align:center; margin-top:10px; color:var(--ink-soft); font-size:13px; background:none; border:none; cursor:pointer; width:100%; }
+.reason-box{ margin-top:12px; display:none; }
+.reason-box textarea{ width:100%; padding:10px; border-radius:8px; border:none; font-size:13px; min-height:60px; }
+.reason-box button{ margin-top:8px; width:100%; padding:11px; border:none; border-radius:8px; background:#fff; color:var(--red); font-weight:700; }
+
+/* ---------------- Gestion des prix ---------------- */
+.price-row{ display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); }
+.price-row .city{ flex:1; font-weight:600; font-size:14px; }
+.price-row input{ width:110px; padding:9px; border-radius:8px; border:1px solid var(--line); text-align:right; font-size:14px; }
+.save-prices{ margin-top:14px; }
+.saved-msg{ text-align:center; color:var(--green); font-size:12.5px; margin-top:8px; display:none; }
 </style>
 </head>
 <body>
 
 <div id="splash">
-  <div class="mark">CT</div>
-  <h1 class="serif">CTM-TCY</h1>
-  <span>INTERNATIONAL</span>
-  <div class="tag">ESPACE AGENT</div>
+  <img class="busPhoto" src="bus-source.jpg" alt="">
+  <div class="veil"></div>
+  <div class="brandText"><h1>CTM-TCY</h1></div>
+  <div class="tag">INTERNATIONAL</div>
+  <div class="agentTag">ESPACE AGENT · CONTRÔLE</div>
 </div>
 
 <div id="login">
   <div class="box">
-    <div class="mark2">CT</div>
+    <div class="mark2">CTM-TCY</div>
     <h2>CTM-TCY International</h2>
     <div class="sub">ESPACE AGENT · CONTRÔLE</div>
     <input type="text" id="identInput" placeholder="Identifiant">
@@ -138,29 +137,48 @@ body{
 </div>
 
 <div id="app">
-  <div class="topbar">
-    <div>
-      <div class="intl">CTM-TCY · INTERNATIONAL</div>
-      <h1>Contrôle billet</h1>
-      <div class="agentTag">Agent connecté</div>
+  <div class="hero">
+    <img src="bus-source.jpg" alt="">
+    <div class="overlay"></div>
+    <div class="row">
+      <div>
+        <div class="intl">CTM-TCY · INTERNATIONAL</div>
+        <h1>Espace agent</h1>
+        <div class="agentTag2">Contrôle des billets</div>
+      </div>
+      <button class="logout" id="btnLogout">Déconnexion</button>
     </div>
-    <button class="logout" id="btnLogout">Déconnexion</button>
   </div>
 
   <div class="content">
-    <div class="search-card">
-      <label>Code du billet</label>
-      <input type="text" class="code-input" id="codeInput" maxlength="6" placeholder="4K9B2P">
-      <button class="btn" id="btnSearch">Vérifier le code</button>
+    <div class="tabs">
+      <div class="tab active" id="tabControle">Contrôle</div>
+      <div class="tab" id="tabPrix">Gestion des prix</div>
     </div>
 
-    <div class="result" id="result"></div>
+    <div id="viewControle">
+      <div class="search-card">
+        <label>Code du billet</label>
+        <input type="text" class="code-input" id="codeInput" maxlength="6" placeholder="4K9B2P">
+        <button class="btn" id="btnSearch">Vérifier le code</button>
+      </div>
+      <div class="result" id="result"></div>
+    </div>
+
+    <div id="viewPrix" style="display:none;">
+      <div class="search-card">
+        <h3 class="serif" style="margin-top:0;color:var(--green-deep);">Tarifs par ville (depuis Abidjan)</h3>
+        <div id="priceRows"></div>
+        <button class="btn save-prices" id="btnSavePrices">Enregistrer les tarifs</button>
+        <div class="saved-msg" id="savedMsg">✔ Tarifs enregistrés</div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA-R0xvWR0zoNv9-nzbPHaz_sPziX8vgGA",
@@ -173,17 +191,21 @@ const firebaseConfig = {
 const fbApp = initializeApp(firebaseConfig);
 const db = getFirestore(fbApp);
 
-const VALID_IDENT = 'CTM-TCY'; // identifiant de test partagé — deviendra un matricule individuel plus tard
+const VALID_IDENT = 'CTM-TCY';
+const DEFAULT_TARIFS = { Man:7500, "Duékoué":9000, Facobly:9000, Bangolo:8500, Ouaninou:11100 };
 
 // ---------------- Splash → Login ----------------
 window.addEventListener('load', ()=>{
   setTimeout(()=>{
     document.getElementById('splash').style.display = 'none';
-    document.getElementById('login').style.display = 'flex';
-  }, 1500);
+    if(sessionStorage.getItem('ctmtcy_agent_ident') === VALID_IDENT){
+      document.getElementById('app').style.display = 'block';
+    }else{
+      document.getElementById('login').style.display = 'flex';
+    }
+  }, 2600);
 });
 
-// ---------------- Login ----------------
 function tryLogin(){
   const val = document.getElementById('identInput').value.trim().toUpperCase();
   if(val === VALID_IDENT){
@@ -196,7 +218,6 @@ function tryLogin(){
 }
 document.getElementById('btnLogin').onclick = tryLogin;
 document.getElementById('identInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') tryLogin(); });
-
 document.getElementById('btnLogout').onclick = ()=>{
   sessionStorage.removeItem('ctmtcy_agent_ident');
   document.getElementById('app').style.display = 'none';
@@ -205,20 +226,57 @@ document.getElementById('btnLogout').onclick = ()=>{
   document.getElementById('login').style.display = 'flex';
 };
 
-// Si déjà connecté dans cette session (évite de retaper à chaque rechargement)
-if(sessionStorage.getItem('ctmtcy_agent_ident') === VALID_IDENT){
-  window.addEventListener('load', ()=>{
-    document.getElementById('splash').style.display = 'none';
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-  });
+// ---------------- Tabs ----------------
+document.getElementById('tabControle').onclick = ()=>{
+  document.getElementById('tabControle').classList.add('active');
+  document.getElementById('tabPrix').classList.remove('active');
+  document.getElementById('viewControle').style.display = 'block';
+  document.getElementById('viewPrix').style.display = 'none';
+};
+document.getElementById('tabPrix').onclick = ()=>{
+  document.getElementById('tabPrix').classList.add('active');
+  document.getElementById('tabControle').classList.remove('active');
+  document.getElementById('viewControle').style.display = 'none';
+  document.getElementById('viewPrix').style.display = 'block';
+  loadPricesUI();
+};
+
+// ---------------- Gestion des prix ----------------
+async function loadPricesUI(){
+  let tarifs = {...DEFAULT_TARIFS};
+  try{
+    const snap = await getDoc(doc(db, 'tarifs', 'villes'));
+    if(snap.exists()) tarifs = {...tarifs, ...snap.data()};
+  }catch(e){}
+
+  const wrap = document.getElementById('priceRows');
+  wrap.innerHTML = Object.entries(tarifs).map(([ville, prix])=>`
+    <div class="price-row">
+      <div class="city">Abidjan ↔ ${ville}</div>
+      <input type="number" data-ville="${ville}" value="${prix}">
+    </div>
+  `).join('');
 }
 
-// ---------------- Recherche / validation de code ----------------
+document.getElementById('btnSavePrices').onclick = async ()=>{
+  const inputs = document.querySelectorAll('#priceRows input');
+  const data = {};
+  inputs.forEach(i => data[i.dataset.ville] = Number(i.value));
+  try{
+    await setDoc(doc(db, 'tarifs', 'villes'), data);
+    const msg = document.getElementById('savedMsg');
+    msg.style.display = 'block';
+    setTimeout(()=> msg.style.display = 'none', 2500);
+  }catch(e){
+    alert("Erreur d'enregistrement — vérifiez votre connexion.");
+  }
+};
+
+// ---------------- Recherche / validation / refus de code ----------------
 document.getElementById('btnSearch').onclick = async ()=>{
   const code = document.getElementById('codeInput').value.trim().toUpperCase();
   const resultBox = document.getElementById('result');
-  if(!code){ return; }
+  if(!code) return;
   resultBox.style.display = 'block';
   resultBox.innerHTML = '<div class="result-card ok"><div class="status-tag">RECHERCHE...</div><h3>Vérification en cours</h3></div>';
 
@@ -227,41 +285,45 @@ document.getElementById('btnSearch').onclick = async ()=>{
     const snap = await getDoc(ref);
 
     if(!snap.exists()){
-      resultBox.innerHTML = `
-        <div class="result-card none">
-          <div class="status-tag">CODE INTROUVABLE</div>
-          <h3>Aucune réservation avec ce code</h3>
-          <div class="line">Vérifiez la saisie avec le passager.</div>
-        </div>`;
+      resultBox.innerHTML = `<div class="result-card none"><div class="status-tag">CODE INTROUVABLE</div><h3>Aucune réservation avec ce code</h3><div class="line">Vérifiez la saisie avec le passager.</div></div>`;
       return;
     }
 
     const b = snap.data();
-    const d = new Date(b.date);
+    const d = new Date(b.dateAller);
     const dateStr = d.toLocaleDateString('fr-FR', {day:'2-digit', month:'short', year:'numeric'});
+    const nomComplet = `${b.nom} ${b.prenom}`;
 
     if(b.statut === 'utilise'){
-      resultBox.innerHTML = `
-        <div class="result-card used">
-          <div class="status-tag">⚠ DÉJÀ UTILISÉ</div>
-          <h3>${b.nom}</h3>
-          <div class="line">Pièce : <b>${b.piece}</b></div>
-          <div class="route">${b.depart} → ${b.destination}</div>
-          <div class="line">${dateStr} · Départ ${b.heure} · ${b.prix} FCFA</div>
-          <div class="line" style="margin-top:8px;">Validé le : ${b.valideLe ? new Date(b.valideLe).toLocaleString('fr-FR') : '—'}</div>
-        </div>`;
+      resultBox.innerHTML = `<div class="result-card used"><div class="status-tag">✔ DÉJÀ VALIDÉ</div><h3>${nomComplet}</h3>
+        <div class="line">${b.profession}, ${b.age} ans</div>
+        <div class="route">${b.depart} → ${b.destination}</div>
+        <div class="line">${dateStr} · ${b.heure} · Siège ${b.siege}</div>
+        <div class="line" style="margin-top:8px;">Validé le : ${b.valideLe ? new Date(b.valideLe).toLocaleString('fr-FR') : '—'}</div></div>`;
+      return;
+    }
+
+    if(b.statut === 'refuse'){
+      resultBox.innerHTML = `<div class="result-card refused"><div class="status-tag">✕ DÉJÀ REFUSÉ</div><h3>${nomComplet}</h3>
+        <div class="line">Motif précédent : ${b.motifRefus || '—'}</div></div>`;
       return;
     }
 
     resultBox.innerHTML = `
       <div class="result-card ok">
-        <div class="status-tag">✔ BILLET VALIDE</div>
-        <h3>${b.nom}</h3>
-        <div class="line">Pièce d'identité : <b>${b.piece}</b></div>
+        <div class="status-tag">BILLET EN RÈGLE</div>
+        <h3>${nomComplet}</h3>
+        <div class="line">${b.profession}, ${b.age} ans</div>
         <div class="route">${b.depart} → ${b.destination}</div>
-        <div class="line">${dateStr} · Départ ${b.heure} · ${b.prix} FCFA</div>
+        <div class="line">${dateStr} · Départ ${b.heure} · Siège n°${b.siege}</div>
+        <div class="line">Type : ${b.typeVoyage === 'aller-retour' ? 'Aller-retour' : 'Aller simple'} · Total payé : ${Number(b.prixTotal).toLocaleString('fr-FR')} FCFA</div>
         <div class="actions">
-          <button class="btn confirm" id="btnValider">Valider l'embarquement</button>
+          <button class="btn confirm" id="btnValider">Valider</button>
+          <button class="btn deny" id="btnRefuser">Refuser</button>
+        </div>
+        <div class="reason-box" id="reasonBox">
+          <textarea id="motifInput" placeholder="Motif du refus (ex : pièce ne correspond pas au nom)"></textarea>
+          <button id="btnConfirmRefus">Confirmer le refus</button>
         </div>
       </div>`;
 
@@ -271,7 +333,22 @@ document.getElementById('btnSearch').onclick = async ()=>{
         valideLe: new Date().toISOString(),
         valideParAgent: sessionStorage.getItem('ctmtcy_agent_ident') || VALID_IDENT
       });
-      document.getElementById('btnSearch').click(); // rafraîchit l'affichage avec le nouveau statut
+      document.getElementById('btnSearch').click();
+    };
+
+    document.getElementById('btnRefuser').onclick = ()=>{
+      document.getElementById('reasonBox').style.display = 'block';
+    };
+
+    document.getElementById('btnConfirmRefus').onclick = async ()=>{
+      const motif = document.getElementById('motifInput').value.trim() || 'Non précisé';
+      await updateDoc(ref, {
+        statut: 'refuse',
+        motifRefus: motif,
+        valideLe: new Date().toISOString(),
+        valideParAgent: sessionStorage.getItem('ctmtcy_agent_ident') || VALID_IDENT
+      });
+      document.getElementById('btnSearch').click();
     };
 
   }catch(err){
