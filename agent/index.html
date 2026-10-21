@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CTM-TCY — Agent</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1F6B3B">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Work+Sans:wght@400;500;600;700&display=swap');
+
+:root{
+  --green:#1F6B3B; --green-deep:#143F23; --orange:#C2571E;
+  --cream:#F5F8F3; --ink:#1D2A21; --ink-soft:#6E7C71;
+  --line:#DCE6DE; --gold:#C9A24A; --red:#B23A2E;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{ background:var(--cream); color:var(--ink); font-family:'Work Sans',sans-serif; min-height:100vh; overflow-x:hidden; -webkit-tap-highlight-color:transparent; }
+.serif{ font-family:'Fraunces',serif; }
+
+/* ---------------- Splash ---------------- */
+#splash{ position:fixed; inset:0; background:#0d0a07; z-index:100; overflow:hidden; }
+#splash .busPhoto{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:brightness(0.55) saturate(1.05); transform:scale(1.12); animation:slowPan 8s ease-in-out infinite alternate; }
+@keyframes slowPan{ from{transform:scale(1.12) translateX(-2%);} to{transform:scale(1.18) translateX(2%);} }
+#splash .veil{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(20,63,35,0.35) 0%, rgba(13,10,7,0.75) 100%); }
+#splash .brandText{ position:absolute; left:0; right:0; top:38%; text-align:center; padding:0 20px; }
+#splash .brandText h1{ font-family:'Fraunces',serif; font-weight:900; color:#fff; margin:0; font-size:15vw; letter-spacing:1px; text-shadow:0 6px 24px rgba(0,0,0,0.5); opacity:0; animation:writeLoop 4s ease-in-out infinite; }
+@keyframes writeLoop{ 0%{opacity:0; transform:translateY(10px) scale(.96); letter-spacing:6px;} 15%{opacity:1; transform:translateY(0) scale(1); letter-spacing:1px;} 70%{opacity:1;} 90%{opacity:0; transform:translateY(-6px) scale(1.02);} 100%{opacity:0;} }
+#splash .tag{ position:absolute; left:0; right:0; top:56%; text-align:center; font-size:11px; color:var(--gold); letter-spacing:4px; opacity:.9; }
+#splash .agentTag{ position:absolute; left:0; right:0; bottom:9%; text-align:center; font-size:11px; color:rgba(255,255,255,.75); letter-spacing:3px; }
+
+/* ---------------- Login ---------------- */
+#login{ display:none; min-height:100vh; align-items:center; justify-content:center; padding:24px; }
+#login .box{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:28px 24px; max-width:360px; width:100%; text-align:center; }
+#login .mark2{ width:64px;height:64px;border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-family:'Fraunces',serif; font-weight:700; font-size:13px; text-align:center; }
+#login h2{ font-family:'Fraunces',serif; font-size:19px; margin:0 0 4px; color:var(--green-deep); }
+#login .sub{ font-size:12px; color:var(--ink-soft); margin-bottom:18px; letter-spacing:1px; }
+#login input{ width:100%; padding:13px; border-radius:10px; border:1.5px solid var(--line); font-size:15px; text-align:center; letter-spacing:1px; margin-bottom:10px; }
+#login .err{ color:var(--red); font-size:12.5px; margin-bottom:10px; display:none; }
+#login .btn{ width:100%; padding:13px; border:none; border-radius:10px; background:var(--green); color:#fff; font-weight:700; font-size:15px; cursor:pointer; }
+#login .hint{ font-size:11px; color:var(--ink-soft); margin-top:14px; }
+
+/* ---------------- App shell ---------------- */
+#app{ display:none; padding-bottom:90px; }
+.hero{ position:relative; height:155px; overflow:hidden; border-radius:0 0 20px 20px; }
+.hero img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.hero .overlay{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(20,63,35,0.55) 0%, rgba(13,40,24,0.92) 100%); }
+.hero .row{ position:relative; height:100%; display:flex; justify-content:space-between; align-items:flex-start; padding:18px; }
+.hero .intl{ font-size:11px; letter-spacing:3px; opacity:0.9; color:#fff; }
+.hero h1{ font-family:'Fraunces',serif; font-size:21px; margin:2px 0 0; font-weight:900; color:#fff; }
+.hero .agentTag2{ font-size:11px; opacity:0.85; margin-top:4px; color:#fff; }
+.logout{ background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.4); color:#fff; padding:6px 12px; border-radius:999px; font-size:11.5px; cursor:pointer; }
+
+.content{ max-width:520px; margin:0 auto; padding:18px; }
+
+/* Dashboard stats */
+.stats-row{ display:flex; gap:10px; margin:-26px 0 16px; }
+.stat-card{ flex:1; background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px; text-align:center; box-shadow:0 6px 16px rgba(20,63,35,0.08); }
+.stat-card .num{ font-family:'Fraunces',serif; font-weight:800; font-size:22px; color:var(--green-deep); }
+.stat-card .lbl{ font-size:10.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.5px; }
+.stat-card.ok .num{ color:#2E8B4F; }
+.stat-card.no .num{ color:var(--red); }
+
+.card{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:16px; }
+.card h3{ font-family:'Fraunces',serif; margin:0 0 12px; color:var(--green-deep); font-size:16px; }
+
+.code-input{ width:100%; padding:14px; border-radius:10px; border:1.5px solid var(--line); font-family:'Fraunces',serif; font-size:22px; letter-spacing:6px; text-align:center; text-transform:uppercase; margin-bottom:10px; }
+.btn{ width:100%; padding:13px; border:none; border-radius:10px; background:var(--green); color:#fff; font-weight:700; font-size:14.5px; cursor:pointer; }
+
+.result{ display:none; }
+.result-card{ border-radius:16px; padding:20px; margin-bottom:14px; color:#fff; }
+.result-card.ok{ background:linear-gradient(135deg, var(--green), var(--green-deep)); }
+.result-card.used{ background:linear-gradient(135deg, #2E8B4F, #1F6B3B); }
+.result-card.refused{ background:linear-gradient(135deg, #8A6D1F, #5C4712); }
+.result-card.none{ background:linear-gradient(135deg, var(--red), #7A231A); }
+.result-card .status-tag{ font-size:11px; letter-spacing:2px; opacity:0.9; margin-bottom:6px; }
+.result-card h3{ font-family:'Fraunces',serif; font-size:20px; margin:0 0 12px; color:#fff; }
+.result-card .line{ font-size:13.5px; margin-bottom:4px; }
+.result-card .route{ font-size:16px; font-weight:700; margin:10px 0 2px; }
+.actions{ display:flex; gap:10px; margin-top:14px; }
+.actions .btn.confirm{ background:#fff; color:var(--green-deep); }
+.actions .btn.deny{ background:rgba(178,58,46,0.85); color:#fff; }
+.reason-box{ margin-top:12px; display:none; }
+.reason-box textarea{ width:100%; padding:10px; border-radius:8px; border:none; font-size:13px; min-height:60px; }
+.reason-box button{ margin-top:8px; width:100%; padding:11px; border:none; border-radius:8px; background:#fff; color:var(--red); font-weight:700; }
+
+.price-row{ display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); }
+.price-row .city{ flex:1; font-weight:600; font-size:14px; }
+.price-row input{ width:110px; padding:9px; border-radius:8px; border:1px solid var(--line); text-align:right; font-size:14px; }
+.save-prices{ margin-top:14px; }
+.saved-msg{ text-align:center; color:var(--green); font-size:12.5px; margin-top:8px; display:none; }
+
+.hist-row{ background:#fff; border:1px solid var(--line); border-left:4px solid var(--green); border-radius:10px; padding:12px 14px; margin-bottom:10px; }
+.hist-row.refuse{ border-left-color:var(--red); }
+.hist-row .top{ display:flex; justify-content:space-between; font-size:13.5px; font-weight:600; }
+.hist-row .meta{ font-size:12px; color:var(--ink-soft); margin-top:4px; }
+
+.empty{ text-align:center; padding:40px 20px; color:var(--ink-soft); }
+
+.bottom-nav{ position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--line); display:flex; padding:8px 10px calc(8px + env(safe-area-inset-bottom)); z-index:20; }
+.nav-btn{ flex:1; text-align:center; background:none; border:none; font-size:11px; color:var(--ink-soft); padding:6px 0; cursor:pointer; }
+.nav-btn .ic{ font-size:18px; display:block; margin-bottom:2px; }
+.nav-btn.active{ color:var(--green); font-weight:700; }
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <img class="busPhoto" src="bus-source.jpg" alt="">
+  <div class="veil"></div>
+  <div class="brandText"><h1>CTM-TCY</h1></div>
+  <div class="tag">INTERNATIONAL</div>
+  <div class="agentTag">ESPACE AGENT · CONTRÔLE</div>
+</div>
+
+<div id="login">
+  <div class="box">
+    <div class="mark2">CTM<br>TCY</div>
+    <h2>CTM-TCY International</h2>
+    <div class="sub">ESPACE AGENT · CONTRÔLE</div>
+    <input type="text" id="identInput" placeholder="Matricule">
+    <input type="password" id="passInput" placeholder="Mot de passe">
+    <div class="err" id="identErr">Matricule ou mot de passe incorrect</div>
+    <button class="btn" id="btnLogin">Se connecter</button>
+    <div class="hint">Compte créé uniquement par HD Tech / CTM-TCY — aucune inscription possible ici</div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="hero">
+    <img src="bus-source.jpg" alt=""><div class="overlay"></div>
+    <div class="row">
+      <div><div class="intl">CTM-TCY · INTERNATIONAL</div><h1>Espace agent</h1><div class="agentTag2">Contrôle des billets</div></div>
+      <button class="logout" id="btnLogout">Déconnexion</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="stats-row">
+      <div class="stat-card ok"><div class="num" id="statValides">0</div><div class="lbl">Validés</div></div>
+      <div class="stat-card no"><div class="num" id="statRefuses">0</div><div class="lbl">Refusés</div></div>
+      <div class="stat-card"><div class="num" id="statTotal">0</div><div class="lbl">Total du jour</div></div>
+    </div>
+
+    <div id="viewControle">
+      <div class="card">
+        <h3>Vérifier un billet</h3>
+        <input type="text" class="code-input" id="codeInput" maxlength="6" placeholder="4K9B2P">
+        <button class="btn" id="btnSearch">Vérifier le code</button>
+      </div>
+      <div class="result" id="result"></div>
+    </div>
+
+    <div id="viewPrix" style="display:none;">
+      <div class="card">
+        <h3>Tarifs par ville (depuis Abidjan)</h3>
+        <div id="priceRows"></div>
+        <button class="btn save-prices" id="btnSavePrices">Enregistrer les tarifs</button>
+        <div class="saved-msg" id="savedMsg">✔ Tarifs enregistrés</div>
+      </div>
+    </div>
+
+    <div id="viewHistorique" style="display:none;">
+      <div class="card">
+        <h3>Mes validations du jour</h3>
+        <div id="histList"><div class="empty">Chargement...</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-btn active" id="tabControle"><span class="ic">🎫</span>Contrôle</button>
+    <button class="nav-btn" id="tabHistorique"><span class="ic">🕓</span>Historique</button>
+    <button class="nav-btn" id="tabPrix"><span class="ic">💰</span>Tarifs</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA-R0xvWR0zoNv9-nzbPHaz_sPziX8vgGA",
+  authDomain: "ctmtcy-test.firebaseapp.com",
+  projectId: "ctmtcy-test",
+  storageBucket: "ctmtcy-test.firebasestorage.app",
+  messagingSenderId: "566569781223",
+  appId: "1:566569781223:web:53192afd62f3517e341f42"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+const auth = getAuth(fbApp);
+
+// Les comptes agents sont créés uniquement par vous dans la console Firebase.
+// Le matricule saisi est converti en email technique — invisible pour l'agent.
+function matriculeToEmail(m){ return m.trim().toLowerCase() + '@ctmtcy-agent.local'; }
+
+const DEFAULT_TARIFS = { Man:7500, "Duékoué":9000, Facobly:9000, Bangolo:8500, Ouaninou:11100 };
+const SESSION_LOG_KEY = 'ctmtcy_agent_log_v1'; // historique local des actions de cet agent (today)
+
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function loadLog(){
+  const raw = JSON.parse(localStorage.getItem(SESSION_LOG_KEY) || '[]');
+  return raw.filter(e => e.date === todayStr());
+}
+function addLog(entry){
+  const log = loadLog();
+  log.push({...entry, date: todayStr()});
+  localStorage.setItem(SESSION_LOG_KEY, JSON.stringify(log));
+  updateStats();
+}
+function updateStats(){
+  const log = loadLog();
+  const valides = log.filter(e=>e.action==='valide').length;
+  const refuses = log.filter(e=>e.action==='refuse').length;
+  document.getElementById('statValides').textContent = valides;
+  document.getElementById('statRefuses').textContent = refuses;
+  document.getElementById('statTotal').textContent = valides + refuses;
+}
+
+// ---------------- Splash → Login ----------------
+let splashDone = false;
+let currentAgentMatricule = '';
+
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{
+    document.getElementById('splash').style.display='none';
+    splashDone = true;
+    checkAuthState();
+  }, 2600);
+});
+
+function checkAuthState(){
+  onAuthStateChanged(auth, (user)=>{
+    if(!splashDone) return;
+    if(user){
+      currentAgentMatricule = user.email.split('@')[0].toUpperCase();
+      document.getElementById('login').style.display='none';
+      document.getElementById('app').style.display='block';
+      updateStats();
+    }else{
+      document.getElementById('app').style.display='none';
+      document.getElementById('login').style.display='flex';
+    }
+  });
+}
+
+async function tryLogin(){
+  const matricule=document.getElementById('identInput').value.trim();
+  const pass=document.getElementById('passInput').value;
+  if(!matricule || !pass) return;
+  const btn=document.getElementById('btnLogin');
+  btn.disabled=true; btn.textContent='Connexion...';
+  try{
+    await signInWithEmailAndPassword(auth, matriculeToEmail(matricule), pass);
+    document.getElementById('identErr').style.display='none';
+  }catch(err){
+    document.getElementById('identErr').style.display='block';
+  }finally{
+    btn.disabled=false; btn.textContent='Se connecter';
+  }
+}
+document.getElementById('btnLogin').onclick=tryLogin;
+document.getElementById('passInput').addEventListener('keydown', e=>{ if(e.key==='Enter') tryLogin(); });
+document.getElementById('btnLogout').onclick=()=>{ signOut(auth); };
+
+// ---------------- Tabs ----------------
+function setTab(which){
+  ['Controle','Historique','Prix'].forEach(t=>{
+    document.getElementById('view'+t).style.display = (t===which) ? 'block':'none';
+    document.getElementById('tab'+t).classList.toggle('active', t===which);
+  });
+}
+document.getElementById('tabControle').onclick=()=> setTab('Controle');
+document.getElementById('tabHistorique').onclick=()=>{ setTab('Historique'); renderHistorique(); };
+document.getElementById('tabPrix').onclick=()=>{ setTab('Prix'); loadPricesUI(); };
+
+async function renderHistorique(){
+  const log = loadLog().sort((a,b)=> new Date(b.heure) - new Date(a.heure));
+  const wrap = document.getElementById('histList');
+  if(log.length===0){ wrap.innerHTML = '<div class="empty">Aucune validation aujourd\\'hui</div>'; return; }
+  wrap.innerHTML = log.map(e=>`
+    <div class="hist-row ${e.action==='refuse'?'refuse':''}">
+      <div class="top"><span>${e.nom}</span><span>${e.action==='valide'?'✔ Validé':'✕ Refusé'}</span></div>
+      <div class="meta">${e.route} · Siège ${e.siege} · ${new Date(e.heure).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div>
+    </div>
+  `).join('');
+}
+
+// ---------------- Gestion des prix ----------------
+async function loadPricesUI(){
+  let tarifs={...DEFAULT_TARIFS};
+  try{ const sn=await getDoc(doc(db,'tarifs','villes')); if(sn.exists()) tarifs={...tarifs, ...sn.data()}; }catch(e){}
+  document.getElementById('priceRows').innerHTML = Object.entries(tarifs).map(([v,p])=>`
+    <div class="price-row"><div class="city">Abidjan ↔ ${v}</div><input type="number" data-ville="${v}" value="${p}"></div>
+  `).join('');
+}
+document.getElementById('btnSavePrices').onclick=async ()=>{
+  const data={}; document.querySelectorAll('#priceRows input').forEach(i=> data[i.dataset.ville]=Number(i.value));
+  try{
+    await setDoc(doc(db,'tarifs','villes'), data);
+    const m=document.getElementById('savedMsg'); m.style.display='block'; setTimeout(()=>m.style.display='none',2500);
+  }catch(e){ alert("Erreur d'enregistrement — vérifiez votre connexion."); }
+};
+
+// ---------------- Recherche / validation / refus ----------------
+document.getElementById('btnSearch').onclick=async ()=>{
+  const code=document.getElementById('codeInput').value.trim().toUpperCase();
+  const resultBox=document.getElementById('result');
+  if(!code) return;
+  resultBox.style.display='block';
+  resultBox.innerHTML='<div class="result-card ok"><div class="status-tag">RECHERCHE...</div><h3>Vérification en cours</h3></div>';
+
+  try{
+    const ref=doc(db,'reservations',code);
+    const snap=await getDoc(ref);
+    if(!snap.exists()){
+      resultBox.innerHTML=`<div class="result-card none"><div class="status-tag">CODE INTROUVABLE</div><h3>Aucune réservation avec ce code</h3><div class="line">Vérifiez la saisie avec le passager.</div></div>`;
+      return;
+    }
+    const b=snap.data();
+    const d=new Date(b.dateAller);
+    const dateStr=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'});
+    const nomComplet=`${b.nom} ${b.prenom}`;
+
+    if(b.statut==='utilise'){
+      resultBox.innerHTML=`<div class="result-card used"><div class="status-tag">✔ DÉJÀ VALIDÉ</div><h3>${nomComplet}</h3>
+        <div class="line">${b.profession}, ${b.age} ans</div><div class="route">${b.depart} → ${b.destination}</div>
+        <div class="line">${dateStr} · ${b.heure} · Siège ${b.siege}</div>
+        <div class="line" style="margin-top:8px;">Validé le : ${b.valideLe?new Date(b.valideLe).toLocaleString('fr-FR'):'—'}</div></div>`;
+      return;
+    }
+    if(b.statut==='refuse'){
+      resultBox.innerHTML=`<div class="result-card refused"><div class="status-tag">✕ DÉJÀ REFUSÉ</div><h3>${nomComplet}</h3><div class="line">Motif précédent : ${b.motifRefus||'—'}</div></div>`;
+      return;
+    }
+
+    resultBox.innerHTML=`
+      <div class="result-card ok">
+        <div class="status-tag">BILLET EN RÈGLE</div>
+        <h3>${nomComplet}</h3>
+        <div class="line">${b.profession}, ${b.age} ans ${b.pourTiers?'· Réservation pour tiers':''}</div>
+        <div class="route">${b.depart} → ${b.destination}</div>
+        <div class="line">${dateStr} · Départ ${b.heure} · Siège n°${b.siege}</div>
+        <div class="line">Type : ${b.typeVoyage==='aller-retour'?'Aller-retour':'Aller simple'} · Total payé : ${Number(b.prixTotal).toLocaleString('fr-FR')} FCFA</div>
+        <div class="actions">
+          <button class="btn confirm" id="btnValider">Valider</button>
+          <button class="btn deny" id="btnRefuser">Refuser</button>
+        </div>
+        <div class="reason-box" id="reasonBox">
+          <textarea id="motifInput" placeholder="Motif du refus"></textarea>
+          <button id="btnConfirmRefus">Confirmer le refus</button>
+        </div>
+      </div>`;
+
+    document.getElementById('btnValider').onclick=async ()=>{
+      await updateDoc(ref, { statut:'utilise', valideLe:new Date().toISOString(), valideParAgent: currentAgentMatricule });
+      addLog({ action:'valide', nom:nomComplet, route:`${b.depart} → ${b.destination}`, siege:b.siege, heure:new Date().toISOString() });
+      document.getElementById('btnSearch').click();
+    };
+    document.getElementById('btnRefuser').onclick=()=>{ document.getElementById('reasonBox').style.display='block'; };
+    document.getElementById('btnConfirmRefus').onclick=async ()=>{
+      const motif=document.getElementById('motifInput').value.trim()||'Non précisé';
+      await updateDoc(ref, { statut:'refuse', motifRefus:motif, valideLe:new Date().toISOString(), valideParAgent: currentAgentMatricule });
+      addLog({ action:'refuse', nom:nomComplet, route:`${b.depart} → ${b.destination}`, siege:b.siege, heure:new Date().toISOString() });
+      document.getElementById('btnSearch').click();
+    };
+  }catch(err){
+    resultBox.innerHTML=`<div class="result-card none"><div class="status-tag">ERREUR</div><h3>Connexion impossible</h3><div class="line">${err.message}</div></div>`;
+  }
+};
+
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+</script>
+</body>
+</html>
